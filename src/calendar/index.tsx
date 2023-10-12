@@ -18,6 +18,16 @@ import CalendarHeader, {CalendarHeaderProps} from './header';
 import Day, {DayProps} from './day/index';
 import BasicDay from './day/basic';
 
+
+export interface StartAndDateObject  {
+  month: string
+  startDate: XDate
+  endDate: XDate
+}
+
+
+export type VisibleStartAndEndDateObject = {[key: string]: StartAndDateObject }
+
 export interface CalendarProps extends CalendarHeaderProps, DayProps {
   /** Specify theme properties to override specific styles for calendar parts */
   theme?: Theme;
@@ -63,6 +73,7 @@ export interface CalendarProps extends CalendarHeaderProps, DayProps {
   customHeader?: any;
   /** Allow selection of dates before minDate or after maxDate */
   allowSelectionOutOfRange?: boolean;
+  onGetStartAndEndDate?: (startEndDate: StartAndDateObject | null) => void
 }
 
 /**
@@ -72,6 +83,7 @@ export interface CalendarProps extends CalendarHeaderProps, DayProps {
  */
 const Calendar = (props: CalendarProps & ContextProp) => {
   const {
+    onGetStartAndEndDate,
     initialDate,
     current,
     theme,
@@ -100,6 +112,13 @@ const Calendar = (props: CalendarProps & ContextProp) => {
   const style = useRef(styleConstructor(theme));
   const header = useRef();
   const weekNumberMarking = useRef({disabled: true, disableTouchEvent: true});
+  const startAndEndDatePerMonth = useRef<StartAndDateObject | null>(null);
+
+  useEffect(()=>{
+      if(startAndEndDatePerMonth.current,onGetStartAndEndDate){
+          onGetStartAndEndDate(startAndEndDatePerMonth.current);
+      }
+  },[startAndEndDatePerMonth.current]);
 
   useEffect(() => {
     if (initialDate) {
@@ -110,7 +129,7 @@ const Calendar = (props: CalendarProps & ContextProp) => {
   useDidUpdate(() => {
     const _currentMonth = currentMonth.clone();
     onMonthChange?.(xdateToData(_currentMonth));
-    onVisibleMonthsChange?.([xdateToData(_currentMonth)]);
+    onVisibleMonthsChange?.([xdateToData(_currentMonth)],[]);
   }, [currentMonth]);
 
   const updateMonth = useCallback((newMonth: XDate) => {
@@ -237,6 +256,18 @@ const Calendar = (props: CalendarProps & ContextProp) => {
     const shouldShowSixWeeks = showSixWeeks && !hideExtraDays;
     const days = page(currentMonth, firstDay, shouldShowSixWeeks);
     const weeks: JSX.Element[] = [];
+
+    const currMonth = currentMonth.toString("M_yyyy");
+    const startDateOnTheVisibleMonth = days[0];
+    const endDateOnTheVisibleMonth = days[days.length - 1];
+
+    const startEndDateObject = {
+      month: currMonth,
+      startDate: startDateOnTheVisibleMonth,
+      endDate: endDateOnTheVisibleMonth
+    };
+
+    startAndEndDatePerMonth.current = startEndDateObject;
 
     while (days.length) {
       weeks.push(renderWeek(days.splice(0, 7), weeks.length));

@@ -12,7 +12,7 @@ import constants from '../commons/constants';
 import {useDidUpdate} from '../hooks';
 import {ContextProp} from '../types';
 import styleConstructor from './style';
-import Calendar, {CalendarProps} from '../calendar';
+import Calendar, {CalendarProps, StartAndDateObject, VisibleStartAndEndDateObject} from '../calendar';
 import CalendarListItem from './item';
 import CalendarHeader from '../calendar/header/index';
 import isEqual from 'lodash/isEqual';
@@ -39,6 +39,7 @@ export interface CalendarListProps extends CalendarProps, Omit<FlatListProps<any
   showScrollIndicator?: boolean;
   /** Whether to animate the auto month scroll */
   animateScroll?: boolean;
+  startEndDateOnVisibleMonth?: (startEndDate: StartAndDateObject) => void
 }
 
 export interface CalendarListImperativeMethods {
@@ -100,7 +101,8 @@ const CalendarList = (props: CalendarListProps & ContextProp, ref: any) => {
     onMomentumScrollEnd,
     /** FlatList props */
     onEndReachedThreshold,
-    onEndReached
+    onEndReached,
+    startEndDateOnVisibleMonth
   } = props;
 
   const calendarProps = extractCalendarProps(props);
@@ -110,6 +112,7 @@ const CalendarList = (props: CalendarListProps & ContextProp, ref: any) => {
   const [currentMonth, setCurrentMonth] = useState(parseDate(current));
 
   const shouldUseAndroidRTLFix = useMemo(() => constants.isAndroidRTL && horizontal, [horizontal]);
+  const startAndEndDatePerMonth = useRef<VisibleStartAndEndDateObject>({});
 
   const style = useRef(styleConstructor(theme));
   const list = useRef();
@@ -151,6 +154,14 @@ const CalendarList = (props: CalendarListProps & ContextProp, ref: any) => {
       scrollToMonth(new XDate(current));
     }
   }, [current]);
+
+  useEffect(()=>{
+    if(current && startEndDateOnVisibleMonth){
+      const key = new XDate(current).toString("M_yyyy");
+      const visibleStartEnd = startAndEndDatePerMonth.current[key];
+      startEndDateOnVisibleMonth(visibleStartEnd);
+    }
+  },[current,startAndEndDatePerMonth.current]);
 
   useDidUpdate(() => {
     const currMont = currentMonth?.clone();
@@ -249,6 +260,11 @@ const CalendarList = (props: CalendarListProps & ContextProp, ref: any) => {
         calendarHeight={calendarHeight}
         scrollToMonth={scrollToMonth}
         visible={isDateInRange(item)}
+        onGetStartAndEndDate={startAndDate=>{
+          if(startAndDate){
+            startAndEndDatePerMonth.current[startAndDate.month] = startAndDate;
+          }
+        }}
       />
     );
   }, [horizontal, calendarStyle, calendarWidth, testID, getMarkedDatesForItem, isDateInRange, calendarProps]);

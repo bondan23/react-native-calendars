@@ -5,7 +5,7 @@ import {Theme} from '../types';
 import {toMarkingFormat} from '../interface';
 import {extractCalendarProps} from '../componentUpdater';
 import styleConstructor from './style';
-import Calendar, {CalendarProps} from '../calendar';
+import Calendar, {CalendarProps, StartAndDateObject} from '../calendar';
 
 export type CalendarListItemProps = CalendarProps & {
   item: any;
@@ -15,6 +15,7 @@ export type CalendarListItemProps = CalendarProps & {
   theme?: Theme;
   scrollToMonth?: (date: XDate) => void;
   visible?: boolean;
+  onGetStartAndEndDate?: (startEndDate: StartAndDateObject | null) => void
 };
 
 const CalendarListItem = React.memo((props: CalendarListItemProps) => {  
@@ -29,7 +30,8 @@ const CalendarListItem = React.memo((props: CalendarListItemProps) => {
     headerStyle,
     onPressArrowLeft,
     onPressArrowRight,
-    visible
+    visible,
+    onGetStartAndEndDate
   } = props;
 
   const style = useRef(styleConstructor(theme));
@@ -89,6 +91,7 @@ const CalendarListItem = React.memo((props: CalendarListItemProps) => {
 
   return (
     <Calendar
+      onGetStartAndEndDate={onGetStartAndEndDate}
       hideArrows={true}
       hideExtraDays={true}
       {...calendarProps}

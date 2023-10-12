@@ -24,7 +24,7 @@ import {parseDate, toMarkingFormat} from '../interface';
 import {DateData, Direction} from '../types';
 import styleConstructor, {HEADER_HEIGHT, KNOB_CONTAINER_HEIGHT} from './style';
 import WeekDaysNames from '../commons/WeekDaysNames';
-import Calendar from '../calendar';
+import Calendar, {StartAndDateObject, VisibleStartAndEndDateObject} from '../calendar';
 import CalendarList, {CalendarListProps} from '../calendar-list';
 import Week from './week';
 import WeekCalendar from './WeekCalendar';
@@ -69,6 +69,7 @@ export interface ExpandableCalendarProps extends CalendarListProps {
   closeThreshold?: number;
   /** Whether to close the calendar on day press. Default = true */
   closeOnDayPress?: boolean;
+  showStartEndOnVisibleMonth?: (startEndDate: StartAndDateObject) => void
 }
 
 const headerStyleOverride = {
@@ -122,10 +123,13 @@ const ExpandableCalendar = (props: ExpandableCalendarProps) => {
     onPressArrowRight,
     renderArrow,
     testID,
+    showStartEndOnVisibleMonth,
     ...others
   } = props;
 
   const [screenReaderEnabled, setScreenReaderEnabled] = useState(false);
+
+  const [startEndVisibleMonth, setStartEndVisibleMonth] = useState<StartAndDateObject | null>(null);
 
   /** Date */
 
@@ -158,6 +162,12 @@ const ExpandableCalendar = (props: ExpandableCalendarProps) => {
     // date was changed from AgendaList, arrows or scroll
     scrollToDate(date);
   }, [date]);
+
+  useEffect(()=>{
+    if(startEndVisibleMonth && showStartEndOnVisibleMonth) {
+      showStartEndOnVisibleMonth(startEndVisibleMonth);
+    }
+  },[startEndVisibleMonth?.month]);
 
   /** Number of weeks */
 
@@ -591,6 +601,9 @@ const ExpandableCalendar = (props: ExpandableCalendarProps) => {
         headerStyle={_headerStyle}
         timelineLeftInset={timelineLeftInset}
         context={useContext(Context)}
+        startEndDateOnVisibleMonth={(startEndDate)=>{
+          setStartEndVisibleMonth(startEndDate);
+        }}
       />
     );
   };
