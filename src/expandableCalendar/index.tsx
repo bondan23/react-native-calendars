@@ -46,7 +46,7 @@ const LEFT_ARROW = require('../calendar/img/previous.png');
 const RIGHT_ARROW = require('../calendar/img/next.png');
 const knobHitSlop = {left: 10, right: 10, top: 10, bottom: 10};
 
-interface StartEndDate {
+export interface StartEndDate {
   currentMonth: string
   startDate: string
   endDate: string
