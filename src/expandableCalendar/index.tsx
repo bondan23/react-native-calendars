@@ -46,6 +46,11 @@ const LEFT_ARROW = require('../calendar/img/previous.png');
 const RIGHT_ARROW = require('../calendar/img/next.png');
 const knobHitSlop = {left: 10, right: 10, top: 10, bottom: 10};
 
+interface StartEndDate {
+  currentMonth: string
+  startDate: string
+  endDate: string
+}
 export interface ExpandableCalendarProps extends CalendarListProps {
   /** the initial position of the calendar ('open' or 'closed') */
   initialPosition?: Positions;
@@ -69,7 +74,7 @@ export interface ExpandableCalendarProps extends CalendarListProps {
   closeThreshold?: number;
   /** Whether to close the calendar on day press. Default = true */
   closeOnDayPress?: boolean;
-  showStartEndOnVisibleMonth?: (startEndDate: StartAndDateObject) => void
+  showStartEndOnVisibleMonth?: (startEndDate: StartEndDate) => void
 }
 
 const headerStyleOverride = {
@@ -165,7 +170,11 @@ const ExpandableCalendar = (props: ExpandableCalendarProps) => {
 
   useEffect(()=>{
     if(startEndVisibleMonth && showStartEndOnVisibleMonth) {
-      showStartEndOnVisibleMonth(startEndVisibleMonth);
+      showStartEndOnVisibleMonth({
+        currentMonth: startEndVisibleMonth.month,
+        startDate: startEndVisibleMonth.startDate.toString("yyyy-MM-dd"),
+        endDate: startEndVisibleMonth.endDate.toString("yyyy-MM-dd"),
+      });
     }
   },[startEndVisibleMonth?.month]);
 
