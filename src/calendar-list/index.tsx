@@ -262,7 +262,7 @@ const CalendarList = (props: CalendarListProps & ContextProp, ref: any) => {
         visible={isDateInRange(item)}
         onGetStartAndEndDate={startAndDate=>{
           if(startAndDate){
-            startAndEndDatePerMonth.current[startAndDate.month] = startAndDate;
+            startAndEndDatePerMonth.current[startAndDate.key] = startAndDate;
           }
         }}
       />
