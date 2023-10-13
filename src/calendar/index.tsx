@@ -257,7 +257,7 @@ const Calendar = (props: CalendarProps & ContextProp) => {
     const days = page(currentMonth, firstDay, shouldShowSixWeeks);
     const weeks: JSX.Element[] = [];
 
-    const key = currentMonth.toString("yyyyM");
+    const key = currentMonth.toString("yyyyMM");
     const startDateOnTheVisibleMonth = days[0];
     const endDateOnTheVisibleMonth = days[days.length - 1];
 

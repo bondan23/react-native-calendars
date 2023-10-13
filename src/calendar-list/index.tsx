@@ -157,7 +157,7 @@ const CalendarList = (props: CalendarListProps & ContextProp, ref: any) => {
 
   useEffect(()=>{
     if(current && startEndDateOnVisibleMonth){
-      const key = new XDate(current).toString("yyyyM");
+      const key = new XDate(current).toString("yyyyMM");
       const visibleStartEnd = startAndEndDatePerMonth.current[key];
       startEndDateOnVisibleMonth(visibleStartEnd);
     }
