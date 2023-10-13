@@ -47,7 +47,7 @@ const RIGHT_ARROW = require('../calendar/img/next.png');
 const knobHitSlop = {left: 10, right: 10, top: 10, bottom: 10};
 
 export interface StartEndDate {
-  currentMonth: string
+  key: string
   startDate: string
   endDate: string
 }
@@ -171,7 +171,7 @@ const ExpandableCalendar = (props: ExpandableCalendarProps) => {
   useEffect(()=>{
     if(startEndVisibleMonth && showStartEndOnVisibleMonth) {
       showStartEndOnVisibleMonth({
-        currentMonth: startEndVisibleMonth.key,
+        key: startEndVisibleMonth.key,
         startDate: startEndVisibleMonth.startDate.toString("yyyy-MM-dd"),
         endDate: startEndVisibleMonth.endDate.toString("yyyy-MM-dd"),
       });
