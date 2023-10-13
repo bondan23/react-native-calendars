@@ -20,7 +20,7 @@ import BasicDay from './day/basic';
 
 
 export interface StartAndDateObject  {
-  month: string
+  key: string
   startDate: XDate
   endDate: XDate
 }
@@ -257,12 +257,12 @@ const Calendar = (props: CalendarProps & ContextProp) => {
     const days = page(currentMonth, firstDay, shouldShowSixWeeks);
     const weeks: JSX.Element[] = [];
 
-    const currMonth = currentMonth.toString("M_yyyy");
+    const key = currentMonth.toString("yyyyM");
     const startDateOnTheVisibleMonth = days[0];
     const endDateOnTheVisibleMonth = days[days.length - 1];
 
     const startEndDateObject = {
-      month: currMonth,
+      key,
       startDate: startDateOnTheVisibleMonth,
       endDate: endDateOnTheVisibleMonth
     };

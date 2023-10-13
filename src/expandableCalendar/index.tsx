@@ -171,12 +171,12 @@ const ExpandableCalendar = (props: ExpandableCalendarProps) => {
   useEffect(()=>{
     if(startEndVisibleMonth && showStartEndOnVisibleMonth) {
       showStartEndOnVisibleMonth({
-        currentMonth: startEndVisibleMonth.month,
+        currentMonth: startEndVisibleMonth.key,
         startDate: startEndVisibleMonth.startDate.toString("yyyy-MM-dd"),
         endDate: startEndVisibleMonth.endDate.toString("yyyy-MM-dd"),
       });
     }
-  },[startEndVisibleMonth?.month]);
+  },[startEndVisibleMonth?.key]);
 
   /** Number of weeks */
 
